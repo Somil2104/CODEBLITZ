@@ -1,0 +1,1 @@
+Designs can be created using Figma. Include key screens such as Home, Challenges, Leaderboard, and Profile.
