@@ -2,13 +2,13 @@
 <html>
 <head>
     <title>CodeBlitz</title>
-    <link rel='stylesheet' href='style.css'>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id='app'>
         <h1>Welcome to CodeBlitz!</h1>
         <button onclick='startChallenge()'>Start Challenge</button>
     </div>
-    <script src='script.js'></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
