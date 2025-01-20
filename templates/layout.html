@@ -1,14 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeBlitz</title>
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div id='app'>
-        <h1>Welcome to CodeBlitz!</h1>
-        <button onclick='startChallenge()'>Start Challenge</button>
+<body class="font-sans bg-gray-100 text-gray-900">
+
+    <header class="bg-blue-900 text-white py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="text-2xl font-bold">CodeBlitz</div>
+            <nav class="hidden md:block">
+                <ul class="flex space-x-6">
+                    <li><a href="#home" class="hover:text-yellow-400 transition">Home</a></li>
+                    <li><a href="#challenges" class="hover:text-yellow-400 transition">Challenges</a></li>
+                    <li><a href="#leaderboard" class="hover:text-yellow-400 transition">Leaderboard</a></li>
+                    <li><a href="#about" class="hover:text-yellow-400 transition">About</a></li>
+                    <li><a href="#signup" class="hover:text-yellow-400 transition">Sign Up</a></li>
+                </ul>
+            </nav>
+
+            <!-- Hamburger Menu for Mobile -->
+            <div class="md:hidden flex items-center">
+                <button id="hamburger-btn" class="text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navbar (Hidden by default, shown when hamburger is clicked) -->
+    <div id="mobile-menu" class="md:hidden hidden bg-blue-900 text-white py-4">
+        <ul class="space-y-4 px-4">
+            <li><a href="#home" class="block hover:text-yellow-400 transition">Home</a></li>
+            <li><a href="#challenges" class="block hover:text-yellow-400 transition">Challenges</a></li>
+            <li><a href="#leaderboard" class="block hover:text-yellow-400 transition">Leaderboard</a></li>
+            <li><a href="#about" class="block hover:text-yellow-400 transition">About</a></li>
+            <li><a href="#signup" class="block hover:text-yellow-400 transition">Sign Up</a></li>
+        </ul>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+   {%block body%}
+   
+   {%endblock%}
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-6">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2025 CodeBlitz. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        const hamburgerBtn = document.getElementById("hamburger-btn");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        hamburgerBtn.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+        });
+    </script>
+
 </body>
 </html>
+
