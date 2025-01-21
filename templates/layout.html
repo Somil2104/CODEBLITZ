@@ -7,17 +7,38 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="font-sans bg-gray-100 text-gray-900">
-
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div id="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message bg-{{ 'green-500' if category == 'success' else 'red-500' if category == 'danger' else 'blue-500' }} text-white px-4 py-2 rounded shadow mb-2">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    
+    
+    
     <header class="bg-blue-900 text-white py-4">
         <div class="container mx-auto flex justify-between items-center px-4">
             <div class="text-2xl font-bold">CodeBlitz</div>
             <nav class="hidden md:block">
                 <ul class="flex space-x-6">
-                    <li><a href="#home" class="hover:text-yellow-400 transition">Home</a></li>
+                    <li><a href="/" class="hover:text-yellow-400 transition">Home</a></li>
                     <li><a href="#challenges" class="hover:text-yellow-400 transition">Challenges</a></li>
                     <li><a href="#leaderboard" class="hover:text-yellow-400 transition">Leaderboard</a></li>
                     <li><a href="#about" class="hover:text-yellow-400 transition">About</a></li>
-                    <li><a href="#signup" class="hover:text-yellow-400 transition">Sign Up</a></li>
+                    {% if 'user_id' in session %}
+                        <li><a href="/profile" class="hover:text-yellow-400">Profile</a></li>
+                        <li><a href="/logout" class="hover:text-yellow-400">Logout</a></li>
+                    {% else %}
+                        <li><a href="/signup" class="hover:text-yellow-400">Register</a></li>
+                    {% endif %}
                 </ul>
             </nav>
 
@@ -35,11 +56,16 @@
     <!-- Mobile Navbar (Hidden by default, shown when hamburger is clicked) -->
     <div id="mobile-menu" class="md:hidden hidden bg-blue-900 text-white py-4">
         <ul class="space-y-4 px-4">
-            <li><a href="#home" class="block hover:text-yellow-400 transition">Home</a></li>
+            <li><a href="/" class="block hover:text-yellow-400 transition">Home</a></li>
             <li><a href="#challenges" class="block hover:text-yellow-400 transition">Challenges</a></li>
             <li><a href="#leaderboard" class="block hover:text-yellow-400 transition">Leaderboard</a></li>
             <li><a href="#about" class="block hover:text-yellow-400 transition">About</a></li>
-            <li><a href="#signup" class="block hover:text-yellow-400 transition">Sign Up</a></li>
+            {% if 'user_id' in session %}
+                <li><a href="/profile" class="hover:text-yellow-400">Profile</a></li>
+                li><a href="/logout" class="hover:text-yellow-400">Logout</a></li>
+            {% else %}
+                 <li><a href="/signup" class="hover:text-yellow-400">Register</a></li>
+            {% endif %}
         </ul>
     </div>
 
@@ -60,6 +86,18 @@
 
         hamburgerBtn.addEventListener("click", () => {
             mobileMenu.classList.toggle("hidden");
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const flashMessages = document.getElementById("flash-messages");
+            if (flashMessages) {
+                setTimeout(() => {
+                    flashMessages.style.transition = "opacity 0.5s ease";
+                    flashMessages.style.opacity = "0";
+                    setTimeout(() => flashMessages.remove(), 500);
+                }, 3000); // Adjust duration as needed
+            }
         });
     </script>
 

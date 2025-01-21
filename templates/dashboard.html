@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="container mx-auto py-10">
+    <h1 class="text-3xl font-bold text-blue-900 mb-6">Dashboard</h1>
+    <p class="text-lg text-gray-700 mb-4">Welcome back, {{ username }}!</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Profile</h2>
+            <p class="text-gray-600">View and update your personal information.</p>
+            <a href="/profile" class="text-blue-900 hover:underline">Go to Profile</a>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Challenges</h2>
+            <p class="text-gray-600">Solve fun coding challenges and level up your skills.</p>
+            <a href="" class="text-blue-900 hover:underline">Start Solving</a>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Leaderboard</h2>
+            <p class="text-gray-600">Check your position and compete with others.</p>
+            <a href="" class="text-blue-900 hover:underline">View Leaderboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
