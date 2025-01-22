@@ -7,7 +7,12 @@
     <div class="container mx-auto text-center px-4">
         <h1 class="text-4xl md:text-6xl font-bold mb-4">Level Up Your Coding Skills</h1>
         <p class="text-lg md:text-xl mb-8">CodeBlitz makes learning to code fun, interactive, and addictive! Solve challenges, compete with others, and unlock achievements.</p>
-        <a href="#signup" class="bg-yellow-400 text-black py-3 px-8 rounded-full text-lg hover:bg-yellow-500 transition">Get Started</a>
+        {% if 'user_id' in session %}
+        <a href="/profile" class="bg-yellow-400 text-black py-3 px-8 rounded-full text-lg hover:bg-yellow-500 transition">Profile</a>
+        {% else %}
+            <a href="/signup" class="bg-yellow-400 text-black py-3 px-8 rounded-full text-lg hover:bg-yellow-500 transition">Get Started</a>
+        {% endif %}        
+        
     </div>
 </section>
 
