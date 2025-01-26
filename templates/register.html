@@ -1,32 +1,58 @@
 {% extends "layout.html" %}
 {% block body %}
     <!-- Container -->
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-800 to-purple-600">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-8">
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-800 to-purple-600 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900">
+        <div class="bg-white dark:bg-dark-secondary rounded-lg shadow-lg w-full max-w-md p-8 transition-colors duration-300">
             <!-- Tabs for Sign Up / Login -->
             <div class="text-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Welcome to CodeBlitz</h1>
-                <p class="text-gray-600">Sign up or log in to start your journey.</p>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Welcome to CodeBlitz</h1>
+                <p class="text-gray-600 dark:text-gray-300">Sign up or log in to start your journey.</p>
             </div>
             <div class="flex justify-center space-x-4 mb-8">
-                <button id="signup-tab" class="text-gray-800 font-semibold hover:text-blue-600">Sign Up</button>
-                <button id="login-tab" class="text-gray-800 font-semibold hover:text-blue-600">Login</button>
+                <button id="signup-tab" 
+                    class="text-gray-800 dark:text-white font-semibold hover:text-yellow-400 dark:hover:text-yellow-400 transition-colors duration-300 
+                    relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:left-0 after:-bottom-1 
+                    after:bg-yellow-400 after:transition-all after:duration-300 hover:after:w-full">
+                    Sign Up
+                </button>
+                <button id="login-tab" 
+                    class="text-gray-800 dark:text-white font-semibold hover:text-yellow-400 dark:hover:text-yellow-400 transition-colors duration-300
+                    relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:left-0 after:-bottom-1 
+                    after:bg-yellow-400 after:transition-all after:duration-300 hover:after:w-full">
+                    Login
+                </button>
             </div>
-            <hr class="mb-4">
+            <hr class="mb-4 border-gray-200 dark:border-gray-700">
 
             <!-- Sign Up Form -->
             <form id="signup-form" action="/signup" method="POST" class="space-y-4">
-                <input type="text" name="username" placeholder="Username" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400" required>
-                <input type="email" name="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400" required>
-                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400" required>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Sign Up</button>
+                <input type="text" name="username" placeholder="Username" 
+                    class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400 
+                    dark:bg-dark-accent dark:border-gray-700 dark:text-white dark:placeholder-gray-400" required>
+                <input type="email" name="email" placeholder="Email" 
+                    class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400 
+                    dark:bg-dark-accent dark:border-gray-700 dark:text-white dark:placeholder-gray-400" required>
+                <input type="password" name="password" placeholder="Password" 
+                    class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400 
+                    dark:bg-dark-accent dark:border-gray-700 dark:text-white dark:placeholder-gray-400" required>
+                <button type="submit" 
+                    class="w-full bg-yellow-400 text-black py-2 rounded-lg hover:bg-yellow-500 transition-colors">
+                    Sign Up
+                </button>
             </form>
 
             <!-- Login Form -->
             <form id="login-form" action="/login" method="POST" class="space-y-4 hidden">
-                <input type="text" name="username" placeholder="Username" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400" required>
-                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400" required>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Log In</button>
+                <input type="text" name="username" placeholder="Username" 
+                    class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400 
+                    dark:bg-dark-accent dark:border-gray-700 dark:text-white dark:placeholder-gray-400" required>
+                <input type="password" name="password" placeholder="Password" 
+                    class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-400 
+                    dark:bg-dark-accent dark:border-gray-700 dark:text-white dark:placeholder-gray-400" required>
+                <button type="submit" 
+                    class="w-full bg-yellow-400 text-black py-2 rounded-lg hover:bg-yellow-500 transition-colors">
+                    Log In
+                </button>
             </form>
         </div>
     </div>
@@ -38,14 +64,27 @@
         const signupForm = document.getElementById('signup-form');
         const loginForm = document.getElementById('login-form');
 
+        // Add active state for tabs
+        function setActiveTab(activeTab, inactiveTab) {
+            activeTab.classList.add('text-yellow-400');
+            activeTab.classList.add('after:w-full');
+            inactiveTab.classList.remove('text-yellow-400');
+            inactiveTab.classList.remove('after:w-full');
+        }
+
         signupTab.addEventListener('click', () => {
             signupForm.classList.remove('hidden');
             loginForm.classList.add('hidden');
+            setActiveTab(signupTab, loginTab);
         });
 
         loginTab.addEventListener('click', () => {
             loginForm.classList.remove('hidden');
             signupForm.classList.add('hidden');
+            setActiveTab(loginTab, signupTab);
         });
+
+        // Set initial active state
+        setActiveTab(signupTab, loginTab);
     </script>
 {% endblock %}
