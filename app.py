@@ -19,6 +19,18 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
+
+@app.context_processor
+def utility_processor():
+    def get_dark_mode():
+        return session.get('dark_mode', False)
+    return dict(get_dark_mode=get_dark_mode)
+
+@app.route('/toggle-theme', methods=['POST'])
+def toggle_theme():
+    session['dark_mode'] = not session.get('dark_mode', False)
+    return {'success': True}
+
 @app.route('/')
 def home():
     return render_template("index.html")

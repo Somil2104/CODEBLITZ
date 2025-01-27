@@ -5,8 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeBlitz</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            primary: '#1a202c',
+                            secondary: '#2d3748',
+                            accent: '#4a5568'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .transition-theme {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            padding: 0.75rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.2s ease;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+    </style>
 </head>
-<body class="font-sans bg-gray-100 text-gray-900">
+<body class="font-sans transition-theme bg-gray-50 text-gray-900 dark:bg-dark-primary dark:text-gray-100">
     <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
         {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
@@ -24,11 +58,11 @@
     
     
     
-    <header class="bg-blue-900 text-white py-4">
+    <header class="bg-blue-900 dark:bg-gray-800 text-white py-4">
         <div class="container mx-auto flex justify-between items-center px-4">
             <div class="text-2xl font-bold">CodeBlitz</div>
             <nav class="hidden md:block">
-                <ul class="flex space-x-6">
+                <ul class="flex space-x-6 items-center">
                     <li><a href="/" class="hover:text-yellow-400 transition">Home</a></li>
                     <li><a href="#challenges" class="hover:text-yellow-400 transition">Challenges</a></li>
                     <li><a href="#leaderboard" class="hover:text-yellow-400 transition">Leaderboard</a></li>
@@ -55,14 +89,14 @@
 
     <!-- Mobile Navbar (Hidden by default, shown when hamburger is clicked) -->
     <div id="mobile-menu" class="md:hidden hidden bg-blue-900 text-white py-4">
-        <ul class="space-y-4 px-4">
+        <ul class="space-y-4 px-4"></ul>
             <li><a href="/" class="block hover:text-yellow-400 transition">Home</a></li>
             <li><a href="#challenges" class="block hover:text-yellow-400 transition">Challenges</a></li>
             <li><a href="#leaderboard" class="block hover:text-yellow-400 transition">Leaderboard</a></li>
             <li><a href="#about" class="block hover:text-yellow-400 transition">About</a></li>
             {% if 'user_id' in session %}
                 <li><a href="/profile" class="hover:text-yellow-400">Profile</a></li>
-                li><a href="/logout" class="hover:text-yellow-400">Logout</a></li>
+                <li><a href="/logout" class="hover:text-yellow-400">Logout</a></li>
             {% else %}
                  <li><a href="/signup" class="hover:text-yellow-400">Register</a></li>
             {% endif %}
@@ -74,12 +108,22 @@
    {%endblock%}
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-6">
+    <footer class="bg-gray-900 dark:bg-gray-800 text-white py-6">
         <div class="container mx-auto text-center">
             <p>&copy; 2025 CodeBlitz. All rights reserved.</p>
         </div>
     </footer>
     
+    <button id="darkModeToggle" 
+            class="theme-toggle bg-white dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+        <svg class="w-6 h-6 dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
+        </svg>
+        <svg class="w-6 h-6 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+        </svg>
+    </button>
+
     <script>
         const hamburgerBtn = document.getElementById("hamburger-btn");
         const mobileMenu = document.getElementById("mobile-menu");
@@ -97,6 +141,39 @@
                     flashMessages.style.opacity = "0";
                     setTimeout(() => flashMessages.remove(), 500);
                 }, 3000); // Adjust duration as needed
+            }
+        });
+
+        // Check for saved dark mode preference or system preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        
+        darkModeToggle.addEventListener('click', () => {
+            // Toggle dark class on html element
+            document.documentElement.classList.toggle('dark');
+            
+            // Update localStorage
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+            } else {
+                localStorage.theme = 'light';
+            }
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!('theme' in localStorage)) {
+                if (e.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
             }
         });
     </script>
