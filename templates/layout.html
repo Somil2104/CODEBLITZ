@@ -60,7 +60,9 @@
     
     <header class="bg-blue-900 dark:bg-gray-800 text-white py-4">
         <div class="container mx-auto flex justify-between items-center px-4">
-            <div class="text-2xl font-bold">CodeBlitz</div>
+            <div class="text-2xl font-bold">
+                <a href="/" class="hover:text-yellow-400 transition-colors duration-300">CodeBlitz</a>
+            </div>
             <nav class="hidden md:block">
                 <ul class="flex space-x-6 items-center">
                     <li><a href="/" class="hover:text-yellow-400 transition">Home</a></li>
@@ -87,20 +89,58 @@
         </div>
     </header>
 
-    <!-- Mobile Navbar (Hidden by default, shown when hamburger is clicked) -->
-    <div id="mobile-menu" class="md:hidden hidden bg-blue-900 text-white py-4">
-        <ul class="space-y-4 px-4"></ul>
-            <li><a href="/" class="block hover:text-yellow-400 transition">Home</a></li>
-            <li><a href="#challenges" class="block hover:text-yellow-400 transition">Challenges</a></li>
-            <li><a href="#leaderboard" class="block hover:text-yellow-400 transition">Leaderboard</a></li>
-            <li><a href="#about" class="block hover:text-yellow-400 transition">About</a></li>
-            {% if 'user_id' in session %}
-                <li><a href="/profile" class="hover:text-yellow-400">Profile</a></li>
-                <li><a href="/logout" class="hover:text-yellow-400">Logout</a></li>
-            {% else %}
-                 <li><a href="/signup" class="hover:text-yellow-400">Register</a></li>
-            {% endif %}
-        </ul>
+    <!-- Update the Mobile Menu structure -->
+    <div id="mobile-menu" class="md:hidden fixed top-0 left-0 w-full h-full bg-blue-900 dark:bg-gray-800 transform transition-transform duration-300 translate-x-full z-40">
+        <div class="flex justify-between items-center p-4 border-b border-blue-800 dark:border-gray-700">
+            <a href="/" class="text-xl font-bold text-white hover:text-yellow-400 transition-colors duration-300">CodeBlitz</a>
+            <button id="close-menu" class="text-white p-2 hover:bg-blue-800 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <nav class="p-4">
+            <ul class="space-y-4">
+                <li>
+                    <a href="/" class="block py-2 px-4 text-white hover:bg-blue-800 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="#challenges" class="block py-2 px-4 text-white hover:bg-blue-800 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                        Challenges
+                    </a>
+                </li>
+                <li>
+                    <a href="#leaderboard" class="block py-2 px-4 text-white hover:bg-blue-800 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                        Leaderboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#about" class="block py-2 px-4 text-white hover:bg-blue-800 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                        About
+                    </a>
+                </li>
+                {% if 'user_id' in session %}
+                    <li>
+                        <a href="/profile" class="block py-2 px-4 text-white hover:bg-blue-800 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/logout" class="block py-2 px-4 text-white hover:bg-blue-800 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="/signup" class="block py-2 px-4 text-white hover:bg-blue-800 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            Register
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
 
    {%block body%}
@@ -127,12 +167,33 @@
     <script>
         const hamburgerBtn = document.getElementById("hamburger-btn");
         const mobileMenu = document.getElementById("mobile-menu");
+        const closeMenu = document.getElementById("close-menu");
 
-        hamburgerBtn.addEventListener("click", () => {
-            mobileMenu.classList.toggle("hidden");
+        function toggleMenu() {
+            const isOpen = mobileMenu.classList.contains('translate-x-0');
+            mobileMenu.classList.toggle('translate-x-0');
+            mobileMenu.classList.toggle('translate-x-full');
+            document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+
+        hamburgerBtn.addEventListener("click", toggleMenu);
+        closeMenu.addEventListener("click", toggleMenu);
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const isClickInside = mobileMenu.contains(e.target) || hamburgerBtn.contains(e.target);
+            if (!isClickInside && mobileMenu.classList.contains('translate-x-0')) {
+                toggleMenu();
+            }
         });
-    </script>
-    <script>
+
+        // Close menu when pressing escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('translate-x-0')) {
+                toggleMenu();
+            }
+        });
+
         document.addEventListener("DOMContentLoaded", () => {
             const flashMessages = document.getElementById("flash-messages");
             if (flashMessages) {
