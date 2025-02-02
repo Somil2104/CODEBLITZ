@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4 md:mb-0">Coding Challenges</h1>
+        
+        <div class="flex space-x-4">
+            <select id="difficulty-filter" class="bg-white dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg px-4 py-2 border border-gray-300 dark:border-gray-600">
+                <option value="all">All Difficulties</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+            
+            <select id="sort-order" class="bg-white dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg px-4 py-2 border border-gray-300 dark:border-gray-600">
+                <option value="default">Default Order</option>
+                <option value="difficulty-asc">Easiest First</option>
+                <option value="difficulty-desc">Hardest First</option>
+            </select>
+        </div>
+    </div>
+    
+    <div id="challenges-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for challenge in challenges %}
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105" data-difficulty="{{ challenge.difficulty }}">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">{{ challenge.title }}</h2>
+                        <span class="px-3 py-1 rounded-full text-sm font-medium
+                            {% if challenge.difficulty == 'Easy' %}
+                                bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                            {% elif challenge.difficulty == 'Medium' %}
+                                bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                            {% else %}
+                                bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                            {% endif %}
+                        ">
+                            {{ challenge.difficulty }}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">{{ challenge.description }}</p>
+                    <a href="{{ url_for('challenge_detail', challenge_id=challenge.id) }}" 
+                       class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300">
+                        View Challenge
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+const challengesGrid = document.getElementById('challenges-grid');
+const difficultyFilter = document.getElementById('difficulty-filter');
+const sortOrder = document.getElementById('sort-order');
+
+function filterAndSortChallenges() {
+    const cards = Array.from(challengesGrid.children);
+    const difficulty = difficultyFilter.value;
+    const sort = sortOrder.value;
+    
+    cards.forEach(card => {
+        if (difficulty === 'all' || card.dataset.difficulty === difficulty) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    if (sort !== 'default') {
+        const sortedCards = cards.sort((a, b) => {
+            const difficultyOrder = { 'Easy': 1, 'Medium': 2, 'Hard': 3 };
+            const diffA = difficultyOrder[a.dataset.difficulty];
+            const diffB = difficultyOrder[b.dataset.difficulty];
+            return sort === 'difficulty-asc' ? diffA - diffB : diffB - diffA;
+        });
+        
+        sortedCards.forEach(card => challengesGrid.appendChild(card));
+    }
+}
+
+difficultyFilter.addEventListener('change', filterAndSortChallenges);
+sortOrder.addEventListener('change', filterAndSortChallenges);
+</script>
+{% endblock %}
