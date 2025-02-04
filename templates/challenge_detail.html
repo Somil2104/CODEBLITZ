@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
+
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Challenge details section -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-6">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold text-gray-800 dark:text-white">{{ challenge.title }}</h1>
+                    <span class="px-4 py-2 rounded-full text-sm font-medium
+                        {% if challenge.difficulty == 'Easy' %}
+                            bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                        {% elif challenge.difficulty == 'Medium' %}
+                            bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                        {% else %}
+                            bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                        {% endif %}
+                    ">
+                        {{ challenge.difficulty }}
+                    </span>
+                </div>
+
+                <div class="prose dark:prose-invert max-w-none mb-8">
+                    <p class="text-gray-600 dark:text-gray-300">{{ challenge.description }}</p>
+                </div>
+
+                <!-- Code editor -->
+                <form id="solution-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Your Solution:</label>
+                        <textarea id="code-editor">{{ challenge.initial_code }}</textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-300">
+                        Run Tests
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Test results section -->
+        <div id="test-results" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hidden">
+            <div class="p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Test Results</h2>
+                <div id="results-content" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+
+<script>
+    // Initialize CodeMirror
+    var editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+        mode: 'python',
+        theme: 'monokai',
+        lineNumbers: true,
+        autofocus: true,
+        indentUnit: 4,
+        tabSize: 4,
+        lineWrapping: true,
+        extraKeys: {
+            'Tab': function(cm) {
+                cm.replaceSelection('    ');
+            }
+        }
+    });
+
+    // Handle form submission
+    document.getElementById('solution-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const solution = editor.getValue();
+        
+        try {
+            // Show loading state
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Running Tests...';
+            submitButton.disabled = true;
+
+            const response = await fetch(`/submit_solution/{{ challenge.id }}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    solution: solution 
+                })
+            });
+            
+            const data = await response.json();
+            displayResults(data);
+        } catch (error) {
+            console.error('Error:', error);
+            displayResults({
+                success: false,
+                error: 'An error occurred while submitting your solution.'
+            });
+        } finally {
+            // Reset button state
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            submitButton.textContent = 'Run Tests';
+            submitButton.disabled = false;
+        }
+    });
+
+    function displayResults(data) {
+        const resultsDiv = document.getElementById('test-results');
+        const resultsContent = document.getElementById('results-content');
+        resultsDiv.classList.remove('hidden');
+        
+        if (data.success) {
+            let html = data.results.map(result => `
+                <div class="p-4 rounded-lg ${result.passed ? 'bg-green-100 dark:bg-green-900' : 'bg-red-100 dark:bg-red-900'}">
+                    <h3 class="font-medium ${result.passed ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'}">
+                        Test Case ${result.passed ? 'Passed' : 'Failed'}
+                    </h3>
+                    <div class="mt-2 text-sm">
+                        <p>Input: ${result.input}</p>
+                        <p>Expected: ${result.expected}</p>
+                        <p>Actual: ${result.actual || result.error}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            resultsContent.innerHTML = html;
+        } else {
+            resultsContent.innerHTML = `
+                <div class="p-4 rounded-lg bg-red-100 dark:bg-red-900">
+                    <h3 class="font-medium text-red-800 dark:text-red-200">Error</h3>
+                    <p class="mt-2 text-sm">${data.error}</p>
+                </div>
+            `;
+        }
+    }
+</script>
+{% endblock %}
