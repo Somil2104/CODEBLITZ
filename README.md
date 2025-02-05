@@ -30,6 +30,7 @@ The idea is simple: you tackle bite-sized coding tasks, get instant feedback on 
 - **Frontend:** HTML(Jinja), CSS(Tailwind CSS)
 - **Backend:** Flask
 - **Databse:** SQLite (development), PostgreSQL (production)
+
 ### Setup:
 Clone the repository
 ```
