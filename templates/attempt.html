@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<main class="container mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold mb-6">{{ challenge.title }}</h1>
+    <p class="mb-6">{{ challenge.description }}</p>
+
+    <form method="POST" class="bg-white p-6 rounded-lg shadow-lg">
+        <label for="code" class="block text-gray-700 font-semibold mb-2">Write Your Code:</label>
+        <textarea id="code" name="code" rows="10" class="w-full p-3 border border-gray-300 rounded-lg mb-4" placeholder="Write your code here...">{{ code if code else '' }}</textarea>
+        <button type="submit" class="bg-orange-500 text-white py-2 px-6 rounded-lg font-semibold hover:bg-orange-600 transition-colors">Submit</button>
+    </form>
+
+    {% if status %}
+    <!-- Result Section -->
+    <div class="mt-8 bg-gray-100 p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Evaluation Result</h2>
+        <p class="mb-2"><strong>Status:</strong> {{ status }}</p>
+        <p><strong>Output:</strong></p>
+        <pre class="bg-black text-white p-4 rounded-lg overflow-auto">{{ output }}</pre>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
