@@ -404,6 +404,10 @@ def submit_solution(challenge_id):
             'error': f"Server error: {str(e)}"
         }), 500
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 with app.app_context():
     # Drop all tables and recreate them
     db.drop_all()
