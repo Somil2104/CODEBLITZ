@@ -404,6 +404,10 @@ def submit_solution(challenge_id):
             'error': f"Server error: {str(e)}"
         }), 500
 
+@app.route('/leaderboard')
+def leaderboard():
+    return render_template('leaderboard.html')
+
 @app.route('/about')
 def about():
     return render_template('about.html')

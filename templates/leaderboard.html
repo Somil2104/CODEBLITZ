@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{%block body%}
+<section class="py-12 bg-white dark:bg-dark-secondary transition-colors duration-300">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-8 text-center text-gray-900 dark:text-gray-100">CodeBlitz Leaderboard</h1>
+
+        <div class="bg-gray-100 dark:bg-dark-accent rounded-xl shadow-lg overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-blue-900 dark:bg-gray-800 text-white">
+                    <tr>
+                        <th class="p-4 font-semibold">Rank</th>
+                        <th class="p-4 font-semibold">Username</th>
+                        <th class="p-4 font-semibold">Challenges Solved</th>
+                        <th class="p-4 font-semibold">Total XP</th>
+                        <th class="p-4 font-semibold">Streak</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <td class="p-4 font-bold text-yellow-600">1</td>
+                        <td class="p-4">CodeNinja</td>
+                        <td class="p-4">247</td>
+                        <td class="p-4">8,532</td>
+                        <td class="p-4">
+                            <span class="bg-green-500 text-white px-2 py-1 rounded-full text-sm">365 days</span>
+                        </td>
+                    </tr>
+                    <tr
+                        class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <td class="p-4 font-bold text-gray-500">2</td>
+                        <td class="p-4">AlgoMaster</td>
+                        <td class="p-4">219</td>
+                        <td class="p-4">7,845</td>
+                        <td class="p-4">
+                            <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-sm">287 days</span>
+                        </td>
+                    </tr>
+                    <tr
+                        class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <td class="p-4 font-bold text-yellow-800">3</td>
+                        <td class="p-4">PythonPro</td>
+                        <td class="p-4">203</td>
+                        <td class="p-4">7,231</td>
+                        <td class="p-4">
+                            <span class="bg-purple-500 text-white px-2 py-1 rounded-full text-sm">245 days</span>
+                        </td>
+                    </tr>
+                    {% for user in users %}
+                    <tr
+                        class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <td class="p-4">{{ loop.index + 3 }}</td>
+                        <td class="p-4">{{ user.username }}</td>
+                        <td class="p-4">{{ user.challenges_solved }}</td>
+                        <td class="p-4">{{ user.total_xp }}</td>
+                        <td class="p-4">
+                            <span class="bg-gray-500 text-white px-2 py-1 rounded-full text-sm">{{ user.streak }}
+                                days</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-8 text-center">
+            <p class="text-gray-600 dark:text-gray-400">
+                Climb the ranks by solving more challenges and maintaining your coding streak!
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
